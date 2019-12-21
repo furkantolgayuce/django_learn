@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+
+{% block body %}
+
+    <!-- home_search'i ekledik -->
+    {% include "home_search.html" %}
+
+    {% if contacts %}
+        <div class="my-2 p-3 bg-white rounded shadow">
+            <h6 class="border-bottom border-gray pb-2 mb-0">{% if keyword %}"{{ keyword }}" aramasına ait veriler{% else %}Bütün Veriler{% endif %}</h6>
+
+            {% for data in contacts %}
+                <div class="media text-muted pt-3">
+                    <svg class="bd-placeholder-img mr-2 rounded" width="32" height="32" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" focusable="false" role="img" aria-label="Placeholder: 32x32"><title>Placeholder</title><rect width="100%" height="100%" fill="#6f42c1"></rect><text x="50%" y="50%" fill="#6f42c1" dy=".3em">32x32</text></svg>
+
+                    <p class="media-body pb-3 mb-0 small lh-125 border-bottom border-gray">
+                        <a href="/data/{{ data.id }}"><strong class="d-block text-gray-dark">{{data.title}}</strong></a>
+                        {{ data.description|striptags|safe |truncatewords:50 }}
+                        <br>
+                        {{ data.created_date|date:"d M, Y" }}
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+        {% if contacts.paginator.num_pages > 1 %}
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    <li class="page-item"><a class="page-link" href="?page=1">&laquo;</a></li>
+                    {% for number in contacts.paginator.page_range  %}
+                        <li class="page-item {% if contacts.number == number %}active{% endif %}"><a class="page-link" href="?page={{ number }}">{{ number }}</a></li>
+                    {% endfor %}
+
+                    <li class="page-item"><a class="page-link" href="?page={{ contacts.paginator.num_pages }}">&raquo;</a></li>
+                </ul>
+            </nav>
+        {% endif %}
+    {% else %}
+        <div class="my-2 p-3 bg-white rounded shadow-sm">
+        <h6 class="mb-0">"{{ keyword }}" aramasına ait veri bulunamadı.</h6>
+        </div>
+    {% endif %}
+
+{% endblock body %}
